@@ -1,0 +1,28 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: audit-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/fincard}
+    username: ${DB_USERNAME:fincard}
+    password: ${DB_PASSWORD:fincard}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: audit-service
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: "com.fincard.audit.*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

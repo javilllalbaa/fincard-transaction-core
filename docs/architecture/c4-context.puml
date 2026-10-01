@@ -1,0 +1,12 @@
+@startuml C4_Context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title FinCard Transaction Core - C4 Context
+
+Person(customer, "Customer", "Consumes FinCard APIs")
+System(fincard, "FinCard Transaction Core", "Authentication and audit capabilities")
+System_Ext(client, "Client Application", "Mobile/Web/Partner application")
+
+Rel(customer, client, "Uses")
+Rel(client, fincard, "HTTPS/JSON")
+@enduml

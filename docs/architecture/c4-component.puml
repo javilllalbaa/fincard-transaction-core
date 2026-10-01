@@ -1,0 +1,21 @@
+@startuml C4_Component
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Authorization Service - C4 Component
+
+Container_Boundary(auth, "Authorization Service") {
+  Component(controller, "AuthController", "Spring MVC", "Exposes login and protected endpoints")
+  Component(service, "AuthService", "Application Service", "Validates credentials and orchestrates authentication")
+  Component(repository, "UserRepository", "Spring Data JPA", "Loads users")
+  Component(jwt, "JwtService", "JJWT", "Creates and validates JWTs")
+  Component(filter, "JwtAuthenticationFilter", "Spring Security", "Authenticates requests using Bearer JWT")
+}
+
+ContainerDb(db, "PostgreSQL", "PostgreSQL", "User persistence")
+
+Rel(controller, service, "Calls")
+Rel(service, repository, "Reads user")
+Rel(service, jwt, "Generates token")
+Rel(filter, jwt, "Validates token")
+Rel(repository, db, "SQL/JPA")
+@enduml

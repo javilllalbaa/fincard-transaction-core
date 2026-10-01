@@ -1,0 +1,22 @@
+@startuml C4_Container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title FinCard Transaction Core - C4 Container
+
+Person(customer, "Customer")
+
+System_Boundary(fincard, "FinCard Transaction Core") {
+  Container(auth, "Authorization Service", "Spring Boot 3 / Java 21", "JWT authentication and protected APIs")
+  Container(audit, "Audit Service", "Spring Boot 3 / Java 21", "Consumes audit events and persists audit records")
+  ContainerDb(postgres, "PostgreSQL", "PostgreSQL 16", "Users and audit events")
+  ContainerDb(redis, "Redis", "Redis 7", "Cache/session-related transient data")
+  ContainerQueue(kafka, "Apache Kafka", "Kafka", "Asynchronous audit events")
+}
+
+Rel(customer, auth, "Authenticates", "HTTPS/JSON")
+Rel(auth, postgres, "Reads users", "JPA/JDBC")
+Rel(auth, redis, "Uses cache", "Redis")
+Rel(auth, kafka, "Publishes audit events", "Kafka")
+Rel(kafka, audit, "Delivers events", "Kafka")
+Rel(audit, postgres, "Stores audit events", "JPA/JDBC")
+@enduml
